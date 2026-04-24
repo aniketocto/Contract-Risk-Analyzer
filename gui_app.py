@@ -7,6 +7,7 @@ from agents.ingestion_agent import ingestion_agent
 from agents.structuring_agent import structuring_agent
 from agents.classification_agent import classification_agent
 from agents.risk_agent import risk_agent
+from agents.scoring_agent import scoring_agent
 
 class ContractAnalyzerGUI:
     def __init__(self, root):
@@ -39,9 +40,14 @@ class ContractAnalyzerGUI:
 
         ttk.Label(top_frame, text="Analyze As:", font=('Helvetica', 10, 'bold')).pack(side=tk.LEFT, padx=5)
         self.role_var = tk.StringVar(value="Contractor")
-        self.role_dropdown = ttk.Combobox(top_frame, textvariable=self.role_var, state="readonly", width=15)
+        self.role_dropdown = ttk.Combobox(top_frame, textvariable=self.role_var, state="normal", width=12)
         self.role_dropdown['values'] = ("Contractor", "Client", "Vendor", "Employee", "Freelancer")
-        self.role_dropdown.pack(side=tk.LEFT, padx=5)
+        self.role_dropdown.pack(side=tk.LEFT, padx=2)
+
+        ttk.Label(top_frame, text="+ Context:", font=('Helvetica', 10)).pack(side=tk.LEFT, padx=2)
+        self.context_var = tk.StringVar(value="")
+        self.context_entry = ttk.Entry(top_frame, textvariable=self.context_var, width=20)
+        self.context_entry.pack(side=tk.LEFT, padx=2)
 
         self.analyze_btn = ttk.Button(top_frame, text="Start Analysis", command=self.start_analysis, state=tk.DISABLED)
         self.analyze_btn.pack(side=tk.LEFT, padx=20)
@@ -127,28 +133,38 @@ class ContractAnalyzerGUI:
 
     def run_pipeline(self):
         try:
-            role = self.role_var.get()
+            base_role = self.role_var.get().strip() or "Contractor"
+            extra_context = self.context_var.get().strip()
+            
+            if extra_context:
+                role = f"{base_role} ({extra_context})"
+            else:
+                role = base_role
             
             # Step 1
-            self.update_status(f"[1/4] Ingesting {os.path.basename(self.current_file)}...")
+            self.update_status(f"[1/5] Ingesting {os.path.basename(self.current_file)}...")
             ingested = ingestion_agent(self.current_file)
             if ingested["status"] != "success":
                 raise Exception(ingested.get("error", "Ingestion failed"))
             raw_text = ingested["raw_text"]
 
             # Step 2
-            self.update_status("[2/4] Structuring document tree...")
+            self.update_status("[2/5] Structuring document tree...")
             structured = structuring_agent(raw_text)
 
             # Step 3
-            self.update_status("[3/4] Classifying clauses using AI (Takes time!)...")
+            self.update_status("[3/5] Classifying clauses using AI (Takes time!)...")
             classified = classification_agent(structured)
 
             # Step 4
-            self.update_status(f"[4/4] Performing Risk Analysis for '{role}' (Takes time!)...")
+            self.update_status(f"[4/5] Performing Risk Analysis for '{role}' (Takes time!)...")
             risk_result = risk_agent(classified, user_role=role)
 
-            self.root.after(0, self.display_results, risk_result)
+            # Step 5
+            self.update_status("[5/5] Calculating Overall Contract Score...")
+            score_result = scoring_agent(risk_result.get("clauses", []))
+
+            self.root.after(0, self.display_results, risk_result, score_result)
 
         except Exception as e:
             self.root.after(0, self.display_error, str(e))
@@ -156,7 +172,7 @@ class ContractAnalyzerGUI:
     def update_status(self, msg):
         self.root.after(0, self.status_var.set, msg)
 
-    def display_results(self, data):
+    def display_results(self, data, score_data):
         self.update_status("✅ Analysis Complete.")
         self.analyze_btn.config(state=tk.NORMAL)
 
@@ -164,23 +180,30 @@ class ContractAnalyzerGUI:
         clauses = data.get("clauses", [])
         total_clauses = len(clauses)
         
-        risk_counts = {"High": 0, "Medium": 0, "Low": 0}
+        overall_score = score_data.get("overall_score", 0.0)
+        risk_counts = score_data.get("summary", {"high": 0, "medium": 0, "low": 0})
         cat_counts = {}
-        
         for c in clauses:
-            r = c.get("risk", "Low")
-            if r in risk_counts:
-                risk_counts[r] += 1
             t = c.get("type", "Other")
             cat_counts[t] = cat_counts.get(t, 0) + 1
 
+        # Use stars/emojis based on score (Lower risk = better)
+        if overall_score > 66:
+            score_eval = "HIGH RISK 🚨"
+        elif overall_score > 33:
+            score_eval = "MODERATE RISK ⚠️"
+        else:
+            score_eval = "LOW RISK ✅"
+
         stats_lines = [
-            f"📊 OVERVIEW",
+            f"🎯 OVERALL SCORE",
+            f"{overall_score}/100 ({score_eval})",
+            f"\n📊 SUMMARY",
             f"Total Clauses: {total_clauses}",
             f"\n🔥 RISK BREAKDOWN",
-            f"High Risk:   {risk_counts['High']}",
-            f"Medium Risk: {risk_counts['Medium']}",
-            f"Low Risk:    {risk_counts['Low']}",
+            f"High Risk:   {risk_counts.get('high', 0)}",
+            f"Medium Risk: {risk_counts.get('medium', 0)}",
+            f"Low Risk:    {risk_counts.get('low', 0)}",
             f"\n📑 CATEGORIES"
         ]
         for cat, count in sorted(cat_counts.items(), key=lambda x: x[1], reverse=True):
