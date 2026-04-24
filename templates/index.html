@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered contract risk analysis tool that identifies risky clauses and classifies contract sections.">
+    <title>Contract Risk Analyzer — AI-Powered</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- ═══════════════════ HEADER ═══════════════════ -->
+    <header id="main-header">
+        <div class="header-left">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+            </div>
+            <div>
+                <h1>Contract Risk Analyzer</h1>
+                <p class="subtitle">AI-Powered Clause Classification & Risk Detection</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="status-badge" id="pipeline-status">
+                <span class="status-dot"></span>
+                <span>Ready</span>
+            </div>
+        </div>
+    </header>
+
+    <main id="app-main">
+        <!-- ═══════════════════ UPLOAD SECTION ═══════════════════ -->
+        <section id="upload-section" class="glass-card">
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-content">
+                    <div class="upload-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                    </div>
+                    <h2>Upload Contract</h2>
+                    <p>Drag & drop your contract file here, or click to browse</p>
+                    <p class="file-types">Supports: PDF, TXT, DOCX, Images (OCR)</p>
+                    <input type="file" id="file-input" accept=".pdf,.txt,.docx,.png,.jpg,.jpeg" hidden>
+                    <button id="browse-btn" class="btn btn-primary">Browse Files</button>
+                </div>
+                <div id="file-preview" class="file-preview hidden">
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                        <span id="file-name" class="file-name"></span>
+                        <span id="file-size" class="file-size"></span>
+                    </div>
+                    <button id="remove-file" class="btn-icon" title="Remove file">✕</button>
+                </div>
+            </div>
+            <div class="role-selector">
+                <label for="user-role" class="role-label">Analyze as:</label>
+                <select id="user-role" class="filter-select">
+                    <option value="Contractor">Contractor / Service Provider</option>
+                    <option value="Client">Client / Buyer</option>
+                    <option value="Vendor">Vendor / Supplier</option>
+                    <option value="Employee">Employee</option>
+                    <option value="Freelancer">Freelancer</option>
+                </select>
+            </div>
+            <button id="analyze-btn" class="btn btn-accent" disabled>
+                <span class="btn-text">Analyze Contract</span>
+                <span class="btn-loader hidden">
+                    <span class="spinner"></span>
+                    Analyzing...
+                </span>
+            </button>
+        </section>
+
+        <!-- ═══════════════════ RESULTS (hidden until analysis) ═══════════════════ -->
+        <div id="results-container" class="hidden">
+
+            <!-- STATS ROW -->
+            <section id="stats-row" class="stats-row">
+                <div class="stat-card glass-card">
+                    <div class="stat-icon stat-blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Total Clauses</span>
+                        <span class="stat-value" id="stat-clauses">0</span>
+                    </div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-icon stat-purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Sections</span>
+                        <span class="stat-value" id="stat-sections">0</span>
+                    </div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-icon stat-red">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">High Risk</span>
+                        <span class="stat-value" id="stat-high-risk">0</span>
+                    </div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-icon stat-amber">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Medium Risk</span>
+                        <span class="stat-value" id="stat-med-risk">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CATEGORY BREAKDOWN -->
+            <section id="breakdown-section" class="glass-card">
+                <h2 class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon"><path d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+                    Category Breakdown
+                </h2>
+                <div id="category-bars" class="category-bars"></div>
+            </section>
+
+            <!-- RISK BREAKDOWN -->
+            <section id="risk-section" class="glass-card">
+                <h2 class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                    Risk Breakdown
+                </h2>
+                <div id="risk-bars" class="category-bars"></div>
+            </section>
+
+            <!-- CLAUSES TABLE -->
+            <section id="clauses-section" class="glass-card">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+                        Risk Analysis Results
+                    </h2>
+                    <div class="filter-group">
+                        <select id="filter-category" class="filter-select">
+                            <option value="all">All Categories</option>
+                        </select>
+                        <select id="filter-risk" class="filter-select">
+                            <option value="all">All Risk Levels</option>
+                            <option value="High">High Risk</option>
+                            <option value="Medium">Medium Risk</option>
+                            <option value="Low">Low Risk</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="clauses-list" class="clauses-list"></div>
+            </section>
+
+            <!-- SECTION TREE -->
+            <section id="tree-section" class="glass-card">
+                <h2 class="section-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon"><path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+                    Contract Structure
+                </h2>
+                <div id="section-tree" class="section-tree"></div>
+            </section>
+        </div>
+
+        <!-- ERROR TOAST -->
+        <div id="error-toast" class="toast hidden">
+            <span class="toast-icon">⚠️</span>
+            <span id="error-message"></span>
+        </div>
+    </main>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

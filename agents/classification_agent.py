@@ -65,7 +65,7 @@ Clause:
 # Each rule: (category, list_of_keyword_patterns)
 _FALLBACK_RULES = [
     ("Liability",              [r"liab\w*", r"liable"]),
-    ("Termination",            [r"terminat\w*", r"cancel\w*"]),
+    ("Termination",            [r"\bterminate\b", r"\btermination\b"]),
     ("Intellectual Property",  [r"intellectual\s+property", r"\bip\b", r"copyright", r"patent", r"trademark"]),
     ("Payment",                [r"payment", r"invoice", r"fee\b", r"cost\b", r"compensat\w*"]),
     ("Confidentiality",        [r"confidential\w*", r"non-disclosure", r"\bnda\b"]),
@@ -91,19 +91,25 @@ def classification_agent(data: dict) -> dict:
         clause_id = clause.get("id", "")
 
         # 🚫 Skip junk / headers
-        if clause_id.startswith("P") or len(text.split()) < 5:
+        if clause_id.startswith("P") or len(text.split()) < 6:
             clause["type"] = "Other"
             clause["confidence"] = "low"
             continue
 
-        # Step 1: LLM
+        # Step 1: LLM (Prioritize AI for accuracy)
         category = classify_with_llm(text)
 
-        # Step 2: fallback
-        if category == "Other":
+        # Step 2: Fallback if LLM fails
+        if category == "Other" or len(category) > 30:
             category = fallback_classification(text)
 
+        # Step 3: scope filtering (FIXED)
+        if "scope of work" in text.lower() or "services" in text.lower():
+            category = "Other"
+
+        # Step 4: assign
         clause["type"] = category
+        # If the LLM still couldn't figure it out, confidence is low
         clause["confidence"] = "high" if category != "Other" else "low"
 
     return data
