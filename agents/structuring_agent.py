@@ -25,8 +25,10 @@ _SECTION_PATTERNS = [
         r'[\s.:–\-]*\s*(?P<title>.*)$'
     ),
     # "1. Title" or "1.  Title" (top-level numbered heading — one integer)
+    # Title must start with uppercase and can contain letters, spaces,
+    # punctuation, parentheses, digits, etc.
     re.compile(
-        r'^(?P<num>\d+)\.\s+(?P<title>[A-Z][A-Za-z\s&,]+)$'
+        r'^(?P<num>\d+)\.\s+(?P<title>[A-Z][^\n]{2,})$'
     ),
     # "1.1  Some text" / "1.1.2  Some text"  (sub-clause with decimals)
     re.compile(
@@ -162,11 +164,21 @@ def structuring_agent(raw_text: str) -> dict:
 
     def _make_node(block: dict) -> dict:
         body = '\n'.join(block['body_lines']).strip()
-        # For clauses that captured their text as the "title" with no body
-        display_text = body if body else block['title']
+        title = block['title'].strip()
+
+        # Combine title and body:
+        # For "Clause 2.2: The text here" patterns, the actual clause text
+        # is captured in 'title'.  If body also exists, we need BOTH.
+        if title and body:
+            display_text = title + '\n' + body
+        elif title:
+            display_text = title
+        else:
+            display_text = body
+
         return {
             'id': block['num'],
-            'title': block['title'],
+            'title': title,
             'text': display_text,
             'level': block['level'],
             'children': [],
