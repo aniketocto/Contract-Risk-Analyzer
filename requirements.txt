@@ -1,0 +1,4 @@
+# Contract Risk Analyzer – Dependencies
+gradio>=4.0.0
+langchain>=0.2.0
+langchain-ollama>=0.1.0
