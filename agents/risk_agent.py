@@ -1,6 +1,7 @@
 import ollama
 import json
 import re
+from agents.rag_agent import retrieve_similar
 
 
 # ── Valid risk levels ────────────────────────────────────────────
@@ -105,6 +106,23 @@ def llm_risk_analysis(text: str, user_role: str) -> dict:
     Call LLM to analyze risk from the user's perspective.
     Returns {"risk": "High|Medium|Low", "reason": "..."} or {}.
     """
+    # RAG Injection: Retrieve past knowledge
+    past_context = retrieve_similar(text, user_role, top_k=1)
+    
+    rag_str = ""
+    if past_context:
+        past = past_context[0]
+        
+        # 🚀 MASSIVE SPEEDUP: Semantic Caching
+        # If we have seen a very similar clause before, skip the LLM completely to save time!
+        if past.get("_sim_score", 0) > 0.85:
+            return {
+                "risk": past["risk"],
+                "reason": f"[RAG CACHE] {past['reason']}"
+            }
+            
+        rag_str = f"\n\n[LOCAL MEMORY: In the past, a similar clause was rated '{past['risk']}' because: {past['reason']}. Consider this precedent if applicable.]\n"
+
     prompt = f"""You are a legal contract risk analyzer.
 
 Analyze this clause from the perspective of the **{user_role}** (the party you are protecting).
@@ -112,7 +130,7 @@ Analyze this clause from the perspective of the **{user_role}** (the party you a
 Consider:
 - Is this clause fair or one-sided?
 - Does it expose the {user_role} to financial, legal, or operational risk?
-- Are there any red flags like unlimited liability, short notice periods, or forfeiture?
+- Are there any red flags like unlimited liability, short notice periods, or forfeiture?{rag_str}
 
 Return ONLY valid JSON (no markdown, no explanation):
 {{"risk": "High" or "Medium" or "Low", "reason": "One sentence explanation from {user_role}'s perspective"}}
@@ -178,7 +196,11 @@ def risk_agent(data: dict, user_role: str = "Contractor") -> dict:
         llm_reason = llm_result.get("reason", "")
 
         # Step 3: Merge — rules OVERRIDE when they detect High risk
-        if rule_risk == "High":
+        if "[RAG CACHE]" in llm_reason:
+            # Prevent recursive formatting on cache hits
+            final_risk = llm_risk or rule_risk
+            final_reason = llm_reason
+        elif rule_risk == "High":
             # Rules caught a critical pattern — trust rules
             final_risk = "High"
             final_reason = rule_reason

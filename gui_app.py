@@ -8,6 +8,8 @@ from agents.structuring_agent import structuring_agent
 from agents.classification_agent import classification_agent
 from agents.risk_agent import risk_agent
 from agents.scoring_agent import scoring_agent
+from agents.rag_agent import store_clauses
+from agents.suggestion_agent import suggestion_agent
 
 class ContractAnalyzerGUI:
     def __init__(self, root):
@@ -17,6 +19,7 @@ class ContractAnalyzerGUI:
 
         self.current_file = None
         self.clauses_data_map = {}
+        self.selected_clause = None
         self.setup_ui()
 
     def setup_ui(self):
@@ -95,7 +98,13 @@ class ContractAnalyzerGUI:
         detail_frame = ttk.Frame(right_frame, padding=10, relief=tk.SUNKEN)
         right_frame.add(detail_frame, weight=1)
 
-        ttk.Label(detail_frame, text="Clause Details", font=("Helvetica", 14, "bold")).pack(anchor=tk.W, pady=(0, 5))
+        detail_top = ttk.Frame(detail_frame)
+        detail_top.pack(fill=tk.X, pady=(0, 5))
+
+        ttk.Label(detail_top, text="Clause Details", font=("Helvetica", 14, "bold")).pack(side=tk.LEFT)
+        self.suggest_btn = ttk.Button(detail_top, text="✨ Suggest Improvement", command=self.on_suggest_click, state=tk.DISABLED)
+        self.suggest_btn.pack(side=tk.RIGHT)
+
         self.detail_text = tk.Text(detail_frame, wrap=tk.WORD, state=tk.DISABLED, bg=self.root.cget("bg"), bd=0, font=('Helvetica', 11))
         self.detail_text.pack(fill=tk.BOTH, expand=True)
 
@@ -161,8 +170,12 @@ class ContractAnalyzerGUI:
             risk_result = risk_agent(classified, user_role=role)
 
             # Step 5
-            self.update_status("[5/5] Calculating Overall Contract Score...")
+            self.update_status("[5/6] Calculating Overall Contract Score...")
             score_result = scoring_agent(risk_result.get("clauses", []))
+
+            # Step 6
+            self.update_status("[6/6] Archiving knowledge to local RAG database...")
+            store_clauses(risk_result.get("clauses", []))
 
             self.root.after(0, self.display_results, risk_result, score_result)
 
@@ -241,6 +254,12 @@ class ContractAnalyzerGUI:
             c_reason = c.get("reason", "No reason provided.")
             c_text = c.get("text", "")
             
+            self.selected_clause = c
+            if c_risk in ("High", "Medium"):
+                self.suggest_btn.config(state=tk.NORMAL)
+            else:
+                self.suggest_btn.config(state=tk.DISABLED)
+            
             content = f"ID: {c_id}  |  Category: {c_type}  |  Risk Level: {c_risk}\n"
             content += f"{'-'*60}\n"
             content += f"RISK EXPLANATION:\n{c_reason}\n\n"
@@ -249,6 +268,42 @@ class ContractAnalyzerGUI:
             
             self.detail_text.insert(tk.END, content)
             self.detail_text.config(state=tk.DISABLED)
+
+    def on_suggest_click(self):
+        if not self.selected_clause:
+            return
+            
+        self.suggest_btn.config(state=tk.DISABLED, text="⏳ Generating...")
+        threading.Thread(target=self.run_suggestion, args=(self.selected_clause,), daemon=True).start()
+
+    def run_suggestion(self, clause):
+        try:
+            base_role = self.role_var.get().strip() or "Contractor"
+            extra_context = self.context_var.get().strip()
+            
+            result = suggestion_agent(clause, user_role=base_role, context=extra_context)
+            
+            self.root.after(0, self.display_suggestion, result)
+        except Exception as e:
+            self.root.after(0, lambda: messagebox.showerror("Error", str(e)))
+            self.root.after(0, lambda: self.suggest_btn.config(state=tk.NORMAL, text="✨ Suggest Improvement"))
+
+    def display_suggestion(self, result):
+        self.suggest_btn.config(state=tk.NORMAL, text="✨ Suggest Improvement")
+        
+        issue = result.get("issue", "Unknown")
+        suggestion = result.get("suggested_clause", "No suggestion available")
+        
+        self.detail_text.config(state=tk.NORMAL)
+        content = f"\n\n{'='*60}\n"
+        content += f"💡 AI SUGGESTION (For {result.get('user_role', 'User')}):\n\n"
+        content += f"Issue Found: {issue}\n\n"
+        content += f"Suggested Rewrite:\n{suggestion}\n"
+        content += f"{'='*60}"
+        
+        self.detail_text.insert(tk.END, content)
+        self.detail_text.see(tk.END)
+        self.detail_text.config(state=tk.DISABLED)
 
     def display_error(self, err_msg):
         self.update_status("❌ Analysis failed.")

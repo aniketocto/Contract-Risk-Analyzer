@@ -1,0 +1,177 @@
+[
+  {
+    "text": "SERVICE AGREEMENT\n\nThis Service Agreement (\"Agreement\") is entered into as of April 24, 2026 (\"Effective Date\") by and between:\nOmniServe Vendors Inc., a Nevada corporation (\"Service Provider\"), and Apex Dominion Holdings LLC, a Delaware limited liability company (\"Client\").\nWHEREAS, Client wishes to engage Service Provider for managed services, and Service Provider agrees to the terms set forth herein, which Service Provider acknowledges have been reviewed and accepted.",
+    "risk": "Low",
+    "reason": "[RAG CACHE] This clause is introductory in nature, setting out the basic agreement details and parties involved, with no apparent risk exposure or adverse implications for the Contractor.",
+    "type": "Other",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider shall perform all services, tasks, and functions as directed by Client from time to time, including any tasks not originally contemplated at the time of execution of this Agreement. Client retains the right to unilaterally expand or alter the scope of work at any time without additional compensation to Service Provider unless Client expressly agrees otherwise in writing.",
+    "risk": "High",
+    "reason": "[RAG CACHE] The clause allows the Client to unilaterally modify the scope of work without additional compensation, exposing me to potential financial and operational risks.",
+    "type": "Other",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider shall make its personnel available to Client on demand, including weekends and holidays, without additional charge, unless Client specifically approves overtime compensation in writing in advance.",
+    "risk": "High",
+    "reason": "[RAG CACHE] As a Contractor, I'm expected to be available 24/7 with no premium pay for overtime, which could lead to burnout and impact my overall well-being.",
+    "type": "Payment",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "All deliverables shall meet such standards as Client determines in its sole and absolute discretion. Service Provider shall revise and rework any deliverable as many times as Client requires until Client, in its sole judgment, deems it acceptable.",
+    "risk": "High",
+    "reason": "[RAG CACHE] Unlimited revisions allowed by the client with no clear limits or criteria, exposing me to potentially endless work and financial burdens.",
+    "type": "Payment",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Client shall pay Service Provider a base fee of USD $20,000.00 per month, subject to Client's right to defer payment for up to one hundred and eighty (180) days if Client determines, in its sole discretion, that project outcomes have not met Client's expectations.",
+    "risk": "High",
+    "reason": "[RAG CACHE] Unilateral decision power \u2014 no negotiation or oversight | LLM (Contractor): The Contractor may be left waiting for 180 days without receiving payment, potentially impacting cash flow and financial stability.",
+    "type": "Payment",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Client may deduct from any invoice amounts Client believes, in its sole discretion, represent unsatisfactory work, rework costs, or losses caused by delays, without obligation to provide detailed justification to Service Provider.",
+    "risk": "High",
+    "reason": "[RAG CACHE] Unilateral decision power \u2014 no negotiation or oversight | LLM (Contractor): This clause allows the Client to unilaterally determine what constitutes 'unsatisfactory work' and deduct amounts from invoices without providing any justification, which could lead to arbitrary and unfair deductions",
+    "type": "Payment",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "All payments are conditioned upon Client's final written acceptance of all deliverables for the applicable period. No payment shall be due unless and until Client provides such written acceptance, which Client may withhold for any reason or no reason. Interest shall not accrue on withheld or deferred amounts.",
+    "risk": "High",
+    "reason": "[RAG CACHE] Client can unilaterally withhold payment for any reason, putting Contractor's cash flow at risk.",
+    "type": "Payment",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider shall bear all costs of materials, tools, third-party licenses, travel, and any other expenses incurred in connection with performing the Services unless Client expressly pre-approves such expenses in writing.",
+    "risk": "High",
+    "reason": "[RAG CACHE] I may be held liable for all expenses related to services without prior approval from the client, which could lead to unforeseen financial burdens.",
+    "type": "Other",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "UNLIMITED LIABILITY OF SERVICE PROVIDER. Service Provider's liability under this Agreement is unlimited. Service Provider shall indemnify, defend, and hold harmless Client and its affiliates, officers, directors, and employees from and against any and all losses, claims, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or related to: (a) Service Provider's performance or non-performance of Services; (b) any third-party claims arising from Service Provider's work; (c) any data loss or system damage occurring during the engagement, regardless of cause; and (d) any consequential, incidental, or indirect losses suffered by Client.",
+    "risk": "High",
+    "reason": "[RAG CACHE] Unlimited liability exposure \u2014 uncapped financial risk | LLM (Contractor): The Contractor is exposed to unlimited liability, which could result in significant financial exposure and potential bankruptcy.",
+    "type": "Other",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Client's liability to Service Provider is expressly limited to the amounts actually paid to Service Provider in the thirty (30) days immediately preceding any claim, excluding any deferred or withheld amounts.",
+    "risk": "Medium",
+    "reason": "[RAG CACHE] This clause limits my client's exposure to Client's liability, but still allows for potential claims based on previously paid services.",
+    "type": "Liability",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider assumes all risk of loss or damage to its equipment and personnel on Client's premises and waives any claims against Client arising therefrom.",
+    "risk": "High",
+    "reason": "[RAG CACHE] The Contractor is assuming unlimited liability for damage to their own equipment and personnel, exposing them to significant financial risk with no clear limits or compensation.",
+    "type": "Liability",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Client may terminate this Agreement at any time, for any reason or no reason, immediately and without prior notice, without liability to Service Provider beyond fees, if any, that Client determines in its sole discretion are owed for fully accepted work.",
+    "risk": "High",
+    "reason": "[RAG CACHE] Unilateral decision power \u2014 no negotiation or oversight | LLM (Contractor): The clause allows the client to terminate the agreement at any time without prior notice, which could result in significant financial loss for me as the contractor.",
+    "type": "Termination",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider may not terminate this Agreement during any active project phase without Client's prior written consent. Service Provider's request for consent to terminate may be denied by Client in its sole discretion. Unauthorized termination by Service Provider shall constitute a material breach entitling Client to liquidated damages equal to twelve (12) months of the monthly fee.",
+    "risk": "High",
+    "reason": "[RAG CACHE] Unilateral decision power \u2014 no negotiation or oversight | LLM (Contractor): Service Provider is heavily restricted from terminating the agreement and may face significant financial consequences if it does so without client approval, which could be denied at any time.",
+    "type": "Termination",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Upon any termination, Service Provider shall continue to provide transition services for up to ninety (90) days at Client's request, at the same monthly rate, without the right to refuse.",
+    "risk": "Low",
+    "reason": "[RAG CACHE] No significant risk indicators detected",
+    "type": "Other",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider acknowledges that it may receive confidential information of Client and agrees to take reasonable care not to disclose such information to unauthorized third parties.",
+    "risk": "Medium",
+    "reason": "[RAG CACHE] This clause creates a potential risk for the Contractor, as they are now responsible for protecting confidential client information, which could lead to reputational damage or legal consequences if breached.",
+    "type": "Confidentiality",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Client shall have no confidentiality obligations with respect to any information received from Service Provider. Client may freely use, disclose, or commercialize Service Provider's proprietary methods, tools, processes, pricing information, and technical approaches without restriction.",
+    "risk": "High",
+    "reason": "[RAG CACHE] This clause removes all confidentiality obligations on my work products, allowing the client to freely exploit our intellectual property with no restrictions.",
+    "type": "Confidentiality",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider acknowledges that breach of any confidentiality obligation shall entitle Client to injunctive relief and damages without proof of actual harm.",
+    "risk": "Low",
+    "reason": "[RAG CACHE] No significant risk indicators detected",
+    "type": "Confidentiality",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "All intellectual property, including pre-existing tools, frameworks, proprietary methodologies, and custom developments brought by Service Provider or created during performance of this Agreement, shall vest entirely and irrevocably in Client upon creation, with no additional compensation to Service Provider.",
+    "risk": "High",
+    "reason": "[RAG CACHE] I will lose ownership of all intellectual property I bring or create during the project without any additional compensation.",
+    "type": "Intellectual Property",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider hereby assigns all present and future rights, title, and interest in all work product to Client and agrees to execute any documents necessary to perfect such assignment at Service Provider's own cost.",
+    "risk": "High",
+    "reason": "[RAG CACHE] This clause essentially gives up the Contractor's ownership and control over their work, exposing them to significant financial risk and potential loss of intellectual property.",
+    "type": "Intellectual Property",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Any dispute arising under this Agreement shall be resolved exclusively in the courts of Client's choosing, in the jurisdiction of Client's principal place of business. Service Provider irrevocably submits to such jurisdiction and waives any objection to venue or jurisdiction.",
+    "risk": "High",
+    "reason": "[RAG CACHE] Unfavorable forum selection clause exposes me to costly and inconvenient litigation in a jurisdiction not favorable to my interests.",
+    "type": "Governing Law",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider shall not initiate any legal proceedings against Client without first exhausting an internal escalation process, which may last up to one hundred and eighty (180) days, during which Service Provider shall continue to perform all Services.",
+    "risk": "High",
+    "reason": "[RAG CACHE] I'm stuck with a 6-month window where I can't pursue legal action if there's an issue, giving the Client leverage over me.",
+    "type": "Other",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "This Agreement shall be governed by the law of the jurisdiction selected by Client at the time any claim is made. Client reserves the right to elect governing law at the time of any dispute.",
+    "risk": "High",
+    "reason": "[RAG CACHE] The Contractor could be exposed to different and potentially less favorable laws in different jurisdictions, which may impact their obligations and liabilities.",
+    "type": "Governing Law",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "This Agreement represents the entire understanding between the parties. Client may amend this Agreement by providing written notice to Service Provider; Service Provider's continued performance shall constitute acceptance of any such amendment.",
+    "risk": "High",
+    "reason": "[RAG CACHE] Unilateral amendment right for the client, which could result in significant changes to my obligations or compensation, without my prior negotiation or consent.",
+    "type": "Termination",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Service Provider may not assign any of its rights or obligations. Client may freely assign this Agreement to any successor, affiliate, or third party.",
+    "risk": "Low",
+    "reason": "[RAG CACHE] No significant risk indicators detected",
+    "type": "Termination",
+    "user_role": "Contractor"
+  },
+  {
+    "text": "Failure by Client to enforce any provision shall not constitute a waiver. All waivers must be in writing and signed by Client.\nIN WITNESS WHEREOF, the parties have executed this Agreement as of the Effective Date.\n\nOmniServe Vendors Inc.                              Apex Dominion Holdings LLC\nSignature: _______________________                  Signature: _______________________\nName:      _______________________                  Name:      _______________________\nTitle:     _______________________                  Title:     _______________________\nDate:      _______________________                  Date:      _______________________",
+    "risk": "Medium",
+    "reason": "[RAG CACHE] As the Contractor, I'm exposed to potential future disputes or issues with Client's non-enforcement of provisions, which could be costly and time-consuming to resolve.",
+    "type": "Termination",
+    "user_role": "Contractor"
+  }
+]
